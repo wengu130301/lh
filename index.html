@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>芦荟 Aloe · AI 时代的百科全书</title>
+<meta name="description" content="芦荟 Aloe —— 由 AI 检索、整理并给出可追溯来源的 AI 时代百科全书。LaswI Studio 出品。">
+<meta name="theme-color" content="#4CAF50">
+<link rel="icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;600&family=Noto+Serif+TC:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   芦荟 Aloe · 设计令牌
+   Material Design 3 · 超大圆角 · 色块拼贴 · 零毛玻璃
+   ============================================================ */
+:root{
+  /* 色板 */
+  --green:#4CAF50;
+  --green-deep:#2E7D32;
+  --green-light:#A5D6A7;
+  --green-mist:#D9EFD5;
+  --paper:#FFF8E1;
+  --ink:#1B2A1F;
+  --blue:#3F51B5;
+  --yellow:#FFD54F;
+  --surface:#F6FBF4;
+  --deep:#122018;
+  --deep-soft:#1B2E23;
+
+  /* 圆角 */
+  --r-sm:28px;
+  --r-md:40px;
+  --r-lg:64px;
+  --r-pill:999px;
+
+  /* 阴影层级 */
+  --sh-1:0 2px 8px rgba(27,42,31,.06);
+  --sh-2:0 8px 24px rgba(27,42,31,.09);
+  --sh-3:0 16px 44px rgba(27,42,31,.14);
+  --sh-4:0 28px 68px rgba(27,42,31,.20);
+
+  /* 动效 */
+  --ease:cubic-bezier(.2,0,0,1);
+  --dur:300ms;
+  --dur-slow:600ms;
+
+  /* 字体 */
+  --font-display:'Space Grotesk','Noto Sans SC','Noto Sans TC',system-ui,sans-serif;
+  --font-body:'Noto Sans SC','Noto Sans TC',system-ui,-apple-system,sans-serif;
+  --font-serif:'Noto Serif SC','Noto Serif TC','Noto Serif',Georgia,serif;
+  --font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+
+  /* 栅格 */
+  --gutter:clamp(20px,5vw,72px);
+  --maxw:1440px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--surface);
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-weight:400;
+  line-height:1.65;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+input{font:inherit;color:inherit}
+::selection{background:var(--yellow);color:var(--ink)}
+
+/* 通用工具类 ------------------------------------------------ */
+.wrap{width:100%;max-width:var(--maxw);margin:0 auto;padding-inline:var(--gutter)}
+.mono{
+  font-family:var(--font-mono);
+  font-size:12px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-weight:400;
+}
+.mono-sm{font-size:11px;letter-spacing:.16em}
+.hollow{
+  font-family:var(--font-display);
+  font-weight:700;
+  letter-spacing:-.035em;
+  line-height:.82;
+  background-image:linear-gradient(128deg,var(--green-deep) 0%,var(--green) 34%,var(--yellow) 68%,var(--blue) 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.hollow--paper{
+  background-image:linear-gradient(128deg,#FFFFFF 0%,var(--paper) 42%,var(--green-light) 100%);
+  -webkit-background-clip:text;background-clip:text;
+}
+.hollow--ink{
+  background-image:linear-gradient(128deg,var(--ink) 0%,var(--green-deep) 55%,var(--green) 100%);
+  -webkit-background-clip:text;background-clip:text;
+}
+.sec-title{
+  font-size:clamp(52px,9.5vw,168px);
+  margin:0 0 clamp(20px,3vw,44px);
+  display:block;
+}
+.mark{
+  position:relative;
+  display:inline-block;
+  padding:0 .18em;
+  border-radius:6px;
+  background:linear-gradient(transparent 58%,var(--yellow) 58%,var(--yellow) 94%,transparent 94%);
+  transition:background-size var(--dur) var(--ease),color var(--dur) var(--ease);
+  background-size:100% 100%;
+}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity var(--dur-slow) var(--ease),transform var(--dur-slow) var(--ease)}
+.reveal.in{opacity:1;transform:none}
+
+/* 叶脉条：一排渐变圆角小柱 ---------------------------------- */
+.vein{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  justify-content:center;
+  padding:clamp(24px,4vw,44px) 0;
+}
+.vein i{
+  display:block;
+  width:10px;height:44px;
+  border-radius:var(--r-pill);
+  background:linear-gradient(180deg,var(--green-light),var(--green));
+  opacity:.45;
+  transition:height var(--dur) var(--ease),opacity var(--dur) var(--ease),background var(--dur) var(--ease);
+}
+.vein i:nth-child(3n){height:26px;background:linear-gradient(180deg,var(--paper),var(--yellow))}
+.vein i:nth-child(4n){height:58px;background:linear-gradient(180deg,var(--green-light),var(--blue));opacity:.3}
+.vein i:nth-child(2n){height:34px}
+
+/* ============================================================
+   ① 固定导航
+   ============================================================ */
+.nav{
+  position:fixed;
+  inset:0 0 auto 0;
+  z-index:120;
+  display:flex;
+  align-items:center;
+  gap:clamp(12px,2vw,32px);
+  padding:16px var(--gutter);
+  background:transparent;
+  transition:background var(--dur) var(--ease),box-shadow var(--dur) var(--ease),
+             border-radius var(--dur) var(--ease),inset var(--dur) var(--ease),
+             padding var(--dur) var(--ease),margin var(--dur) var(--ease);
+}
+.nav.compact{
+  inset:12px 16px auto 16px;
+  padding:10px 18px;
+  border-radius:var(--r-pill);
+  background:rgba(246,251,244,.94);
+  box-shadow:var(--sh-2);
+}
+.nav-brand{display:flex;align-items:center;gap:12px;flex:0 0 auto}
+.nav-brand img{
+  width:38px;height:38px;border-radius:12px;object-fit:cover;
+  transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease);
+}
+.nav-brand:hover img{transform:rotate(-8deg) scale(1.06);box-shadow:var(--sh-2)}
+.nav-brand span{font-family:var(--font-display);font-weight:700;font-size:17px;letter-spacing:.01em}
+.nav-links{display:flex;align-items:center;gap:4px;margin-inline:auto}
+.nav-links a{
+  padding:8px 14px;border-radius:var(--r-pill);
+  font-size:14px;font-weight:500;
+  transition:background var(--dur) var(--ease),color var(--dur) var(--ease),transform var(--dur) var(--ease);
+}
+.nav-links a:hover{background:rgba(76,175,80,.12);color:var(--green-deep);transform:translateY(-1px)}
+.nav-right{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+
+/* 语言分段按钮 */
+.lang{
+  display:flex;gap:2px;padding:3px;
+  background:rgba(27,42,31,.07);
+  border-radius:var(--r-pill);
+}
+.lang button{
+  padding:6px 12px;border-radius:var(--r-pill);
+  font-size:12px;font-weight:500;
+  font-family:var(--font-mono);letter-spacing:.04em;
+  color:rgba(27,42,31,.6);
+  transition:background var(--dur) var(--ease),color var(--dur) var(--ease),box-shadow var(--dur) var(--ease);
+}
+.lang button:hover{color:var(--ink)}
+.lang button[aria-pressed="true"]{
+  background:var(--surface);color:var(--green-deep);box-shadow:var(--sh-1);font-weight:700;
+}
+
+/* 版本角标 + 更新日志悬浮 */
+.ver{position:relative}
+.ver-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 12px;border-radius:var(--r-pill);
+  background:var(--blue);color:#fff;
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;
+  transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease),background var(--dur) var(--ease);
+}
+.ver-badge:hover{transform:translateY(-2px);box-shadow:var(--sh-2);background:#35479e}
+.ver-pop{
+  position:absolute;top:calc(100% + 10px);right:0;width:280px;
+  padding:18px 20px;border-radius:var(--r-sm);
+  background:var(--surface);box-shadow:var(--sh-3);
+  opacity:0;visibility:hidden;transform:translateY(-8px) scale(.97);
+  transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease),visibility var(--dur);
+}
+.ver:hover .ver-pop,.ver:focus-within .ver-pop{opacity:1;visibility:visible;transform:none}
+.ver-pop h4{margin:0 0 10px;font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;color:var(--green-deep);text-transform:uppercase}
+.ver-pop ul{margin:0;padding:0;list-style:none}
+.ver-pop li{
+  font-family:var(--font-mono);font-size:11px;line-height:1.7;
+  color:rgba(27,42,31,.72);padding:4px 0;border-top:1px solid rgba(27,42,31,.07);
+}
+.ver-pop li:first-child{border-top:0}
+
+/* 进入按钮 */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 20px;border-radius:var(--r-pill);
+  background:var(--yellow);color:var(--ink);
+  font-size:14px;font-weight:700;letter-spacing:.01em;
+  box-shadow:var(--sh-1);
+  transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease),background var(--dur) var(--ease);
+}
+.btn .material-symbols-outlined{font-size:18px;transition:transform var(--dur) var(--ease)}
+.btn:hover{transform:translateY(-3px);box-shadow:var(--sh-3);background:#ffd027}
+.btn:hover .material-symbols-outlined{transform:translateX(4px)}
+.btn--big{padding:20px 40px;font-size:19px;border-radius:var(--r-pill)}
+
+/* ============================================================
+   ② Hero 首屏
+   ============================================================ */
+.hero{
+  position:relative;
+  min-height:100vh;min-height:100dvh;
+  padding:120px var(--gutter) 60px;
+  display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+  align-items:center;
+  gap:clamp(20px,4vw,60px);
+  background:linear-gradient(150deg,var(--green-light) 0%,var(--green) 58%,var(--green-deep) 100%);
+  overflow:hidden;
+  isolation:isolate;
+}
+/* 色块拼贴层 */
+.hero-blobs{position:absolute;inset:0;z-index:0;pointer-events:none}
+.blob{position:absolute;border-radius:var(--r-lg);mix-blend-mode:normal}
+.b1{width:38vw;height:38vw;right:-8vw;top:-6vw;border-radius:50%;background:rgba(255,248,225,.22)}
+.b2{width:22vw;height:22vw;left:-4vw;bottom:8vh;border-radius:var(--r-lg);background:rgba(46,125,50,.30);transform:rotate(12deg)}
+.b3{width:14vw;height:14vw;right:16vw;bottom:12vh;border-radius:var(--r-md);background:rgba(255,213,79,.42);transform:rotate(-9deg)}
+.b4{width:9vw;height:9vw;left:22vw;top:14vh;border-radius:50%;background:rgba(255,248,225,.30)}
+.b5{width:26vw;height:11vw;right:6vw;top:52vh;border-radius:var(--r-pill);background:rgba(63,81,181,.16);transform:rotate(-6deg)}
+.b6{width:6vw;height:6vw;left:8vw;top:44vh;border-radius:50%;background:rgba(255,213,79,.55)}
+.hero-glow{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(closest-side at 68% 46%,rgba(255,255,255,.5),transparent 68%),
+             radial-gradient(closest-side at 22% 78%,rgba(255,213,79,.28),transparent 70%);
+}
+.hero-left{position:relative;z-index:2;max-width:640px}
+.hero-kicker{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:7px 14px;border-radius:var(--r-pill);
+  background:rgba(255,248,225,.9);
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;
+  color:var(--green-deep);text-transform:uppercase;
+  box-shadow:var(--sh-1);
+  margin-bottom:clamp(18px,2.4vw,32px);
+}
+.hero h1{
+  font-size:clamp(96px,15vw,260px);
+  margin:0 0 8px;
+  background-image:linear-gradient(120deg,#FFFFFF 0%,var(--paper) 38%,var(--yellow) 72%,#FFFFFF 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  font-family:var(--font-display);font-weight:700;line-height:.8;letter-spacing:-.05em;
+  filter:drop-shadow(0 8px 26px rgba(27,42,31,.18));
+}
+.hero-sub{
+  font-family:var(--font-mono);font-size:12px;letter-spacing:.22em;
+  color:rgba(27,42,31,.72);text-transform:uppercase;
+  margin:0 0 clamp(16px,2vw,26px);
+}
+.hero-tagline{
+  font-size:clamp(19px,2.1vw,28px);line-height:1.5;font-weight:500;
+  color:var(--ink);max-width:26ch;margin:0 0 clamp(24px,3vw,40px);
+}
+/* 问答输入框 */
+.ask{
+  position:relative;
+  display:flex;align-items:center;gap:14px;
+  padding:10px 10px 10px 26px;
+  background:var(--surface);
+  border-radius:var(--r-pill);
+  box-shadow:var(--sh-2),inset 0 0 0 1px rgba(27,42,31,.04);
+  max-width:520px;
+  transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease);
+}
+.ask::before{
+  content:"";position:absolute;inset:-14px;border-radius:inherit;z-index:-1;
+  background:radial-gradient(closest-side,rgba(255,213,79,.55),transparent 78%);
+  opacity:.9;transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease);
+}
+.ask:hover{transform:translateY(-3px);box-shadow:var(--sh-3)}
+.ask:hover::before{opacity:1;transform:scale(1.04)}
+.ask .material-symbols-outlined{font-size:24px;color:var(--green-deep);flex:0 0 auto}
+.ask input{
+  flex:1 1 auto;min-width:0;
+  border:0;outline:none;background:transparent;
+  font-size:16px;padding:14px 0;color:var(--ink);
+}
+.ask input::placeholder{color:rgba(27,42,31,.45)}
+.ask button{
+  flex:0 0 auto;display:grid;place-items:center;
+  width:50px;height:50px;border-radius:50%;
+  background:var(--green);color:#fff;
+  transition:background var(--dur) var(--ease),transform var(--dur) var(--ease);
+}
+.ask button:hover{background:var(--green-deep);transform:rotate(-12deg)}
+/* 首屏几何芦荟 */
+.hero-aloe{
+  position:relative;z-index:1;
+  display:grid;place-items:center;
+  animation:sway 7.5s var(--ease) infinite alternate;
+  transform-origin:50% 78%;
+  will-change:transform;
+}
+.hero-aloe svg{
+  width:min(46vw,620px);height:auto;
+  filter:drop-shadow(0 30px 60px rgba(27,42,31,.22));
+}
+@keyframes sway{
+  from{transform:rotate(-1.5deg)}
+  to{transform:rotate(1.5deg)}
+}
+.hero-corner{
+  position:absolute;left:var(--gutter);top:96px;z-index:2;
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--font-display);font-weight:700;font-size:14px;letter-spacing:.4em;
+  color:rgba(27,42,31,.6);
+}
+.hero-corner img{width:26px;height:26px;border-radius:8px;opacity:.9}
+.hero-mark{
+  position:absolute;right:var(--gutter);bottom:36px;z-index:2;
+  font-family:var(--font-display);font-weight:700;
+  font-size:clamp(40px,6vw,96px);letter-spacing:-.03em;
+  color:rgba(255,248,225,.55);
+  line-height:1;pointer-events:none;
+}
+
+/* ============================================================
+   ③ 定位宣言
+   ============================================================ */
+.positioning{
+  padding:clamp(40px,6vw,90px) var(--gutter);
+}
+.pos-card{
+  max-width:var(--maxw);margin:0 auto;
+  display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);
+  gap:clamp(28px,5vw,80px);
+  align-items:center;
+  padding:clamp(34px,6vw,88px);
+  border-radius:var(--r-lg);
+  background:var(--paper);
+  box-shadow:var(--sh-2);
+}
+.pos-card h2{
+  font-size:clamp(56px,8.5vw,150px);
+  margin:0;
+  background-image:linear-gradient(128deg,var(--ink) 0%,var(--green-deep) 48%,var(--green) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.pos-lines{display:flex;flex-direction:column;gap:clamp(18px,2.4vw,34px)}
+.pos-line{
+  display:block;
+  font-family:var(--font-serif);
+  font-weight:600;
+  font-size:clamp(20px,2.5vw,36px);
+  line-height:1.45;
+  letter-spacing:-.01em;
+  transition:transform var(--dur) var(--ease),color var(--dur) var(--ease);
+  padding-left:0;
+}
+.pos-line:hover{transform:translateX(10px);color:var(--green-deep)}
+.pos-line .mark{transition:background-size var(--dur) var(--ease),padding var(--dur) var(--ease)}
+.pos-line:hover .mark{padding-inline:.3em;background-color:rgba(255,213,79,.35)}
+.pos-note{
+  font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;
+  color:rgba(27,42,31,.6);margin-top:clamp(16px,2vw,28px);line-height:1.9;
+}
+
+/* ============================================================
+   ④ 知识分类 Live Tile
+   ============================================================ */
+.categories{padding:clamp(50px,7vw,110px) var(--gutter)}
+.cat-head{max-width:var(--maxw);margin:0 auto}
+.tiles{
+  max-width:var(--maxw);margin:0 auto;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  grid-auto-rows:clamp(150px,17vw,220px);
+  gap:clamp(14px,1.8vw,26px);
+  perspective:1400px;
+}
+.tile{
+  position:relative;border-radius:var(--r-md);
+  transform-style:preserve-3d;
+  transition:transform var(--dur-slow) var(--ease),box-shadow var(--dur) var(--ease);
+  cursor:pointer;
+}
+.tile.big{grid-column:span 2;grid-row:span 1;border-radius:var(--r-lg)}
+.tile.tall{grid-row:span 1;border-radius:var(--r-lg)}
+.tile:hover{transform:translateY(-8px) scale(1.02);box-shadow:var(--sh-3);z-index:3}
+.tile.flipped{transform:rotateY(180deg)}
+.tile.flipped:hover{transform:rotateY(180deg) translateY(-8px) scale(1.02)}
+.tile-face{
+  position:absolute;inset:0;
+  padding:clamp(18px,2vw,30px);
+  border-radius:inherit;
+  display:flex;flex-direction:column;justify-content:space-between;
+  backface-visibility:hidden;
+  overflow:hidden;
+}
+.tile-back{transform:rotateY(180deg)}
+/* 磁贴配色 */
+.t-green{background:var(--green-light);color:var(--ink)}
+.t-green-deep{background:var(--green-deep);color:var(--paper)}
+.t-paper{background:var(--paper);color:var(--ink)}
+.t-mist{background:var(--green-mist);color:var(--ink)}
+.t-yellow{background:var(--yellow);color:var(--ink)}
+.t-white{background:#fff;color:var(--ink)}
+.tile .material-symbols-outlined{font-size:clamp(26px,3vw,38px);opacity:.9}
+.tile-name{font-family:var(--font-serif);font-size:clamp(19px,2.1vw,28px);font-weight:600;line-height:1.2}
+.tile-desc{font-size:13px;line-height:1.65;opacity:.86;max-width:28ch}
+.tile-count{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;opacity:.7;
+}
+.tile-leaf{
+  position:absolute;right:14px;bottom:12px;width:30px;height:30px;opacity:.5;
+  transition:transform var(--dur-slow) var(--ease),opacity var(--dur) var(--ease);
+}
+.tile:hover .tile-leaf{animation:sway 2.4s var(--ease) infinite alternate;opacity:.85}
+
+/* ============================================================
+   ⑤ AI 问答展厅（深色）
+   ============================================================ */
+.ai{
+  position:relative;
+  margin:clamp(30px,5vw,70px) 0;
+  padding:clamp(50px,7vw,110px) var(--gutter);
+  background:var(--deep);
+  color:var(--paper);
+  overflow:hidden;
+}
+.ai::before,.ai::after{
+  content:"";position:absolute;border-radius:50%;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(76,175,80,.30),transparent 72%);
+}
+.ai::before{width:52vw;height:52vw;left:-14vw;top:-18vw}
+.ai::after{width:44vw;height:44vw;right:-12vw;bottom:-16vw;background:radial-gradient(closest-side,rgba(63,81,181,.30),transparent 72%)}
+.ai-head{position:relative;z-index:2;max-width:var(--maxw);margin:0 auto}
+.ai-head h2{
+  font-size:clamp(48px,8.5vw,150px);margin:0 0 14px;
+  font-family:var(--font-display);font-weight:700;line-height:.84;letter-spacing:-.04em;
+  background-image:linear-gradient(120deg,var(--green-light) 0%,#fff 46%,var(--yellow) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.ai-head .mono{color:rgba(255,248,225,.6)}
+.ai-stage{
+  position:relative;z-index:2;
+  max-width:1100px;margin:clamp(30px,5vw,60px) auto 0;
+  display:flex;flex-direction:column;gap:clamp(16px,2vw,26px);
+}
+.bubble-q{
+  align-self:flex-start;max-width:min(560px,88%);
+  padding:20px 26px;border-radius:32px 32px 32px 8px;
+  background:var(--paper);color:var(--ink);
+  font-size:clamp(16px,1.7vw,20px);line-height:1.6;font-weight:500;
+  box-shadow:var(--sh-3);
+  min-height:70px;
+}
+.caret{
+  display:inline-block;width:2px;height:1.05em;vertical-align:-.16em;
+  background:var(--green-deep);margin-left:2px;
+  animation:blink 1s steps(1) infinite;
+}
+@keyframes blink{50%{opacity:0}}
+.card-a{
+  align-self:flex-end;max-width:min(760px,96%);
+  padding:clamp(22px,3vw,38px);
+  border-radius:var(--r-md);
+  background:var(--deep-soft);
+  border:1px solid rgba(165,214,167,.16);
+  box-shadow:var(--sh-4);
+  font-family:var(--font-serif);
+  font-size:clamp(15px,1.6vw,19px);line-height:1.85;
+  color:rgba(255,248,225,.94);
+}
+.card-a p{margin:0 0 1em}
+.card-a p:last-child{margin-bottom:0}
+.cite{
+  display:inline-grid;place-items:center;
+  min-width:17px;height:17px;padding:0 4px;margin-left:2px;
+  border-radius:50%;
+  background:var(--yellow);color:var(--ink);
+  font-family:var(--font-mono);font-size:10px;font-weight:500;
+  vertical-align:super;
+  transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease);
+}
+.card-a .fade{opacity:0;transform:translateY(10px);transition:opacity 700ms var(--ease),transform 700ms var(--ease)}
+.card-a .fade.in{opacity:1;transform:none}
+.sources{
+  display:flex;gap:clamp(12px,1.6vw,20px);flex-wrap:wrap;
+  margin-top:6px;
+}
+.source{
+  flex:1 1 220px;min-width:200px;
+  padding:18px 22px;border-radius:24px;
+  background:rgba(255,248,225,.06);
+  border:1px solid rgba(255,248,225,.12);
+  transition:transform var(--dur) var(--ease),background var(--dur) var(--ease),border-color var(--dur) var(--ease);
+}
+.source:hover{transform:translateY(-6px);background:rgba(255,248,225,.11);border-color:rgba(255,213,79,.5)}
+.source .num{
+  display:inline-block;
+  font-family:var(--font-mono);font-size:12px;
+  color:var(--deep);background:var(--yellow);
+  padding:1px 8px;border-radius:var(--r-pill);
+  transition:transform var(--dur) var(--ease);
+}
+.source:hover .num{transform:scale(1.18)}
+.source h5{margin:12px 0 6px;font-family:var(--font-serif);font-size:15px;font-weight:600;line-height:1.4}
+.source .meta{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;color:rgba(255,248,225,.55)}
+.ai-ask{margin-top:clamp(26px,4vw,48px);display:flex;flex-direction:column;gap:16px}
+.ai-ask .ask{background:rgba(255,248,225,.08);box-shadow:inset 0 0 0 1px rgba(255,248,225,.16);max-width:100%}
+.ai-ask .ask input{color:var(--paper)}
+.ai-ask .ask input::placeholder{color:rgba(255,248,225,.42)}
+.ai-ask .ask::before{display:none}
+.ai-reply{
+  min-height:26px;
+  font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;
+  color:rgba(165,214,167,.9);
+  opacity:0;transition:opacity var(--dur) var(--ease);
+}
+.ai-reply.on{opacity:1}
+
+/* ============================================================
+   ⑥ 精选条目
+   ============================================================ */
+.entries{padding:clamp(50px,7vw,110px) var(--gutter)}
+.entries-head{max-width:var(--maxw);margin:0 auto}
+.entry-grid{
+  max-width:var(--maxw);margin:0 auto;
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:clamp(14px,1.6vw,24px);
+}
+.card{
+  position:relative;
+  min-height:230px;
+  padding:clamp(22px,2.4vw,34px);
+  border-radius:var(--r-md);
+  display:flex;flex-direction:column;
+  box-shadow:var(--sh-1);
+  transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease),border-radius var(--dur) var(--ease);
+  overflow:hidden;
+}
+.card:hover{transform:translateY(-8px);box-shadow:var(--sh-3);border-radius:var(--r-lg)}
+.card .chip{
+  align-self:flex-start;
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  padding:4px 10px;border-radius:var(--r-pill);
+  background:rgba(27,42,31,.10);
+  margin-bottom:auto;
+}
+.card h3{
+  position:relative;
+  font-family:var(--font-serif);font-weight:600;
+  font-size:clamp(20px,2.1vw,29px);line-height:1.25;
+  margin:14px 0 10px;
+  display:inline-block;
+}
+.card h3::after{
+  content:"";position:absolute;left:0;bottom:-3px;height:2px;width:0;
+  background:var(--yellow);border-radius:2px;
+  transition:width var(--dur-slow) var(--ease);
+}
+.card:hover h3::after{width:100%}
+.card p{font-size:13.5px;line-height:1.7;margin:0 0 18px;opacity:.86}
+.card .foot{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-top:auto;
+}
+.cites{display:flex;gap:6px}
+.cites span{
+  font-family:var(--font-mono);font-size:11px;opacity:.72;
+  transition:transform var(--dur) var(--ease),opacity var(--dur) var(--ease);
+}
+.card:hover .cites span{opacity:1;transform:translateY(-3px)}
+.card:hover .cites span:nth-child(2){transition-delay:60ms}
+.card:hover .cites span:nth-child(3){transition-delay:120ms}
+.card .read{
+  display:inline-flex;align-items:center;gap:4px;
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  transition:gap var(--dur) var(--ease);
+}
+.card .read .material-symbols-outlined{font-size:16px;transition:transform var(--dur) var(--ease)}
+.card:hover .read{gap:10px}
+.card:hover .read .material-symbols-outlined{transform:translateX(3px)}
+/* 卡片配色 */
+.c-green{background:var(--green-light);color:var(--ink)}
+.c-deep{background:var(--green-deep);color:var(--paper)}
+.c-deep .chip{background:rgba(255,248,225,.18)}
+.c-deep h3::after{background:var(--yellow)}
+.c-paper{background:var(--paper);color:var(--ink)}
+.c-yellow{background:var(--yellow);color:var(--ink)}
+.c-mist{background:var(--green-mist);color:var(--ink)}
+.c-white{background:#fff;color:var(--ink)}
+/* 拼贴尺寸 */
+.s2{grid-column:span 2}
+.s3{grid-column:span 3}
+.s4{grid-column:span 4}
+.r2{grid-row:span 1}
+/* 文字镂空标题 */
+.card.hollow-title h3{
+  background-image:linear-gradient(120deg,var(--green-deep) 0%,var(--green) 40%,var(--blue) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  font-size:clamp(26px,3.2vw,44px);
+}
+.card.hollow-title h3::after{background:var(--yellow)}
+
+/* ============================================================
+   ⑦ 编辑原则
+   ============================================================ */
+.principles{padding:clamp(40px,6vw,90px) var(--gutter)}
+.pr-card{
+  max-width:var(--maxw);margin:0 auto;
+  display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);
+  gap:clamp(26px,4.5vw,72px);align-items:center;
+  padding:clamp(32px,5.5vw,84px);
+  border-radius:var(--r-lg);
+  background:var(--green-deep);color:var(--paper);
+  box-shadow:var(--sh-2);
+}
+.pr-card h2{
+  font-size:clamp(48px,7.5vw,130px);margin:0;
+  font-family:var(--font-display);font-weight:700;line-height:.84;letter-spacing:-.04em;
+  background-image:linear-gradient(120deg,#fff 0%,var(--green-light) 52%,var(--yellow) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.pr-list{display:flex;flex-direction:column;gap:2px}
+.pr-item{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;
+  padding:20px 4px;
+  border-top:1px solid rgba(255,248,225,.16);
+  transition:background var(--dur) var(--ease),padding var(--dur) var(--ease);
+  border-radius:20px;
+}
+.pr-item:first-child{border-top:0}
+.pr-item:hover{background:rgba(255,248,225,.07);padding-inline:18px}
+.pr-item .material-symbols-outlined{
+  font-size:26px;color:var(--yellow);
+  transition:transform var(--dur) var(--ease),color var(--dur) var(--ease);
+}
+.pr-item:hover .material-symbols-outlined{transform:translateX(5px) rotate(-6deg);color:#fff}
+.pr-item h4{
+  margin:0 0 4px;font-family:var(--font-serif);font-size:clamp(16px,1.8vw,22px);font-weight:600;
+  transition:color var(--dur) var(--ease);
+}
+.pr-item:hover h4{color:var(--yellow)}
+.pr-item p{
+  margin:0;font-size:13.5px;line-height:1.7;color:rgba(255,248,225,.74);
+  max-height:0;opacity:0;overflow:hidden;
+  transition:max-height var(--dur-slow) var(--ease),opacity var(--dur) var(--ease),margin var(--dur) var(--ease);
+}
+.pr-item:hover p{max-height:160px;opacity:1;margin-top:6px}
+
+/* ============================================================
+   ⑧ 版本与更新日志
+   ============================================================ */
+.release{padding:clamp(40px,6vw,90px) var(--gutter)}
+.rel-card{
+  max-width:var(--maxw);margin:0 auto;
+  display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+  gap:clamp(26px,4.5vw,72px);align-items:center;
+  padding:clamp(32px,5.5vw,84px);
+  border-radius:var(--r-lg);
+  background:var(--green-mist);
+  box-shadow:var(--sh-1);
+}
+.rel-ver{
+  font-size:clamp(52px,9vw,140px);margin:0;
+  font-family:var(--font-display);font-weight:700;line-height:.86;letter-spacing:-.05em;
+  background-image:linear-gradient(128deg,var(--green-deep),var(--green) 52%,var(--blue));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.rel-meta{display:flex;gap:22px;flex-wrap:wrap;margin-top:18px}
+.rel-meta div{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;color:rgba(27,42,31,.62)}
+.rel-meta b{display:block;font-size:15px;letter-spacing:0;color:var(--green-deep);font-weight:700;margin-top:4px}
+.log{list-style:none;margin:0;padding:0}
+.log li{
+  font-family:var(--font-mono);font-size:12.5px;line-height:1.7;
+  color:rgba(27,42,31,.78);
+  padding:12px 16px;border-radius:16px;
+  transition:background var(--dur) var(--ease),color var(--dur) var(--ease),transform var(--dur) var(--ease);
+}
+.log li:hover{background:rgba(255,255,255,.85);color:var(--ink);transform:translateX(6px)}
+
+/* ============================================================
+   ⑨ 进入芦荟
+   ============================================================ */
+.enter{
+  position:relative;
+  margin:clamp(20px,4vw,50px) 0;
+  padding:clamp(60px,9vw,140px) var(--gutter);
+  background:linear-gradient(150deg,var(--green) 0%,var(--green-deep) 100%);
+  text-align:center;overflow:hidden;
+}
+.enter::before{
+  content:"";position:absolute;inset:auto -10vw -30vh -10vw;height:60vh;
+  border-radius:50% 50% 0 0;background:rgba(255,248,225,.10);pointer-events:none;
+}
+.enter h2{
+  position:relative;z-index:1;
+  font-size:clamp(52px,10vw,190px);margin:0 0 clamp(24px,4vw,44px);
+  font-family:var(--font-display);font-weight:700;line-height:.82;letter-spacing:-.05em;
+  background-image:linear-gradient(120deg,#fff 0%,var(--paper) 45%,var(--yellow) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.enter-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:18px}
+.enter-url{color:rgba(27,42,31,.66);font-family:var(--font-mono);font-size:12px;letter-spacing:.14em}
+.enter-note{
+  color:rgba(255,248,225,.8);font-size:12.5px;max-width:46ch;line-height:1.8;margin:8px 0 0;
+}
+
+/* ============================================================
+   ⑩ 页脚
+   ============================================================ */
+.footer{
+  padding:clamp(50px,7vw,110px) var(--gutter) 40px;
+  background:var(--ink);color:var(--paper);
+}
+.foot-wrap{max-width:var(--maxw);margin:0 auto}
+.footer h2{
+  font-size:clamp(52px,11vw,200px);margin:0 0 clamp(28px,4vw,52px);
+  font-family:var(--font-display);font-weight:700;line-height:.82;letter-spacing:-.05em;
+  background-image:linear-gradient(120deg,var(--green-light) 0%,#fff 50%,var(--yellow) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.mails{display:flex;flex-wrap:wrap;gap:clamp(16px,3vw,48px);margin-bottom:26px}
+.mails a{
+  position:relative;
+  font-family:var(--font-serif);font-weight:600;
+  font-size:clamp(19px,3.2vw,42px);
+  color:var(--paper);
+  transition:color var(--dur) var(--ease);
+}
+.mails a::after{
+  content:"";position:absolute;left:0;bottom:-4px;height:2px;width:0;
+  background:var(--yellow);border-radius:2px;
+  transition:width var(--dur-slow) var(--ease);
+}
+.mails a:hover{color:var(--yellow)}
+.mails a:hover::after{width:100%}
+.foot-note{color:rgba(255,248,225,.6);font-size:13px;margin:0 0 34px}
+.foot-bottom{
+  display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center;
+  padding-top:24px;border-top:1px solid rgba(255,248,225,.14);
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;color:rgba(255,248,225,.5);
+}
+
+/* ============================================================
+   响应式：平板 / 手机
+   ============================================================ */
+@media (max-width:1080px){
+  .nav-links{display:none}
+  .hero{grid-template-columns:1fr;padding-top:150px;text-align:left}
+  .hero-aloe{order:-1;justify-self:center;margin-bottom:-10px}
+  .hero-aloe svg{width:min(60vw,400px)}
+  .pos-card,.pr-card,.rel-card{grid-template-columns:1fr}
+  .tiles{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .entry-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media (max-width:760px){
+  :root{--gutter:20px}
+  .hero{padding-top:120px;min-height:auto;padding-bottom:48px}
+  .hero h1{font-size:clamp(76px,22vw,120px)}
+  .hero-corner{display:none}
+  .hero-mark{font-size:44px;bottom:16px}
+  .hero-aloe svg{width:min(74vw,300px)}
+  .tiles{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:150px}
+  .tile.big{grid-column:span 2}
+  .entry-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .s2,.s3,.s4{grid-column:span 2}
+  .card{min-height:auto}
+  .bubble-q,.card-a{max-width:100%}
+  .sources{flex-direction:column}
+  .source{min-width:0}
+  .lang button{padding:6px 9px;font-size:11px}
+  .ver-pop{width:min(78vw,280px)}
+  .btn span:not(.material-symbols-outlined){display:none}
+  .btn--big span:not(.material-symbols-outlined){display:inline}
+  .nav-brand span{display:none}
+  .footer h2{letter-spacing:-.04em}
+  .pr-item:hover{padding-inline:4px}
+}
+@media (max-width:420px){
+  .tiles{grid-template-columns:1fr;grid-auto-rows:auto}
+  .tile{min-height:150px}
+  .tile.big{grid-column:span 1}
+  .entry-grid{grid-template-columns:1fr}
+  .s2,.s3,.s4{grid-column:span 1}
+}
+
+/* ============================================================
+   可访问性：尊重 prefers-reduced-motion
+   ============================================================ */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+  .hero-aloe{animation:none}
+  .reveal{opacity:1;transform:none}
+  .card-a .fade{opacity:1;transform:none}
+  .caret{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     ① 固定导航
+     ============================================================ -->
+<header class="nav" id="nav">
+  <a class="nav-brand" href="#top" aria-label="芦荟 Aloe">
+    <img src="logo.png" alt="芦荟 Logo" width="38" height="38">
+    <span>LaswI</span>
+  </a>
+
+  <nav class="nav-links" id="navLinks" aria-label="主导航">
+    <a href="#top" data-i18n="navHome">首页</a>
+    <a href="#about" data-i18n="navAbout">定位</a>
+    <a href="#categories" data-i18n="navCategories">分类</a>
+    <a href="#ai" data-i18n="navAi">AI 问答</a>
+    <a href="#entries" data-i18n="navEntries">条目</a>
+    <a href="#principles" data-i18n="navPrinciples">原则</a>
+  </nav>
+
+  <div class="nav-right">
+    <div class="lang" role="group" aria-label="语言 / Language">
+      <button type="button" data-lang="zh-Hans" aria-pressed="true">简</button>
+      <button type="button" data-lang="zh-Hant" aria-pressed="false">繁</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+
+    <div class="ver" tabindex="0">
+      <span class="ver-badge" id="verBadge">v0.1.0</span>
+      <div class="ver-pop" role="tooltip">
+        <h4 data-i18n="changelogTitle">更新日志</h4>
+        <ul id="verLog"></ul>
+      </div>
+    </div>
+
+    <a class="btn" id="navEnter" href="#" target="_blank" rel="noopener">
+      <span data-i18n="entryLabel">进入芦荟</span>
+      <span class="material-symbols-outlined">arrow_outward</span>
+    </a>
+  </div>
+</header>
+
+<!-- ============================================================
+     ② Hero
+     ============================================================ -->
+<section class="hero" id="top">
+  <div class="hero-blobs" aria-hidden="true">
+    <span class="blob b1"></span>
+    <span class="blob b2"></span>
+    <span class="blob b3"></span>
+    <span class="blob b4"></span>
+    <span class="blob b5"></span>
+    <span class="blob b6"></span>
+  </div>
+  <div class="hero-glow" aria-hidden="true"></div>
+
+  <div class="hero-corner"><img src="logo.png" alt="" width="26" height="26">LASWI STUDIO</div>
+
+  <div class="hero-left">
+    <span class="hero-kicker">
+      <span class="material-symbols-outlined" style="font-size:14px">menu_book</span>
+      <span id="heroKicker">AI 时代的百科全书</span>
+    </span>
+    <h1 id="heroName">芦荟</h1>
+    <p class="hero-sub" id="heroSub">Aloe</p>
+    <p class="hero-tagline" id="heroTagline">把知识问出来，让每一个答案都有出处。</p>
+
+    <form class="ask" id="heroAsk" role="search" autocomplete="off">
+      <span class="material-symbols-outlined" aria-hidden="true">search</span>
+      <input id="heroInput" type="text" data-i18n-ph="askPlaceholder" placeholder="问点什么…" aria-label="提问">
+      <button type="submit" aria-label="提问">
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </button>
+    </form>
+  </div>
+
+  <!-- 几何芦荟：SVG mask 镂空 -->
+  <div class="hero-aloe" id="heroAloe" aria-hidden="true">
+    <svg viewBox="0 0 400 400" role="img" aria-label="几何芦荟标记">
+      <defs>
+        <linearGradient id="aloeSurface" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#FFF8E1"/>
+          <stop offset="42%" stop-color="#A5D6A7"/>
+          <stop offset="72%" stop-color="#FFD54F"/>
+          <stop offset="100%" stop-color="#FFF8E1"/>
+        </linearGradient>
+
+        <!-- 单叶片：尖端圆角三角形 + 中线 + 叶缘小齿 -->
+        <g id="leafShape">
+          <path d="M200 262 C186 210 188 152 200 104 C212 152 214 210 200 262 Z"
+                fill="#fff" stroke="#fff" stroke-width="15" stroke-linejoin="round"/>
+          <rect x="197.5" y="142" width="5" height="98" rx="2.5" fill="#fff"/>
+          <circle cx="187" cy="182" r="3.4" fill="#fff"/>
+          <circle cx="183.5" cy="207" r="3.4" fill="#fff"/>
+          <circle cx="185" cy="232" r="3.4" fill="#fff"/>
+          <circle cx="213" cy="182" r="3.4" fill="#fff"/>
+          <circle cx="216.5" cy="207" r="3.4" fill="#fff"/>
+          <circle cx="215" cy="232" r="3.4" fill="#fff"/>
+        </g>
+
+        <!-- 书页：两片错位圆角矩形 -->
+        <g id="bookShape">
+          <rect x="120" y="268" width="150" height="86" rx="24" fill="#fff" transform="rotate(-7 195 311)"/>
+          <rect x="142" y="274" width="150" height="86" rx="24" fill="#fff" transform="rotate(7 217 317)"/>
+        </g>
+
+        <mask id="aloeMask" maskUnits="userSpaceOnUse" x="0" y="0" width="400" height="400">
+          <rect width="400" height="400" fill="#000"/>
+          <use href="#bookShape"/>
+          <use href="#leafShape" transform="rotate(-46 200 262)"/>
+          <use href="#leafShape" transform="rotate(-23 200 262)"/>
+          <use href="#leafShape"/>
+          <use href="#leafShape" transform="rotate(23 200 262)"/>
+          <use href="#leafShape" transform="rotate(46 200 262)"/>
+        </mask>
+      </defs>
+      <rect width="400" height="400" fill="url(#aloeSurface)" mask="url(#aloeMask)"/>
+    </svg>
+  </div>
+
+  <div class="hero-mark" aria-hidden="true">Aloe</div>
+</section>
+
+<div class="vein" aria-hidden="true">
+  <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+</div>
+
+<!-- ============================================================
+     ③ 什么是芦荟
+     ============================================================ -->
+<section class="positioning" id="about">
+  <div class="pos-card reveal">
+    <h2 class="hollow--ink" style="background-image:linear-gradient(128deg,#1B2A1F,#2E7D32 55%,#4CAF50);-webkit-background-clip:text;background-clip:text;color:transparent">
+      WHAT<br>什么
+    </h2>
+    <div>
+      <div class="pos-lines" id="posLines"></div>
+      <p class="pos-note mono-sm" id="posNote"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ④ 知识分类
+     ============================================================ -->
+<section class="categories" id="categories">
+  <div class="cat-head">
+    <h2 class="sec-title hollow">CATEGORIES</h2>
+    <p class="mono" style="margin:-30px 0 40px;color:rgba(27,42,31,.55)" data-i18n="catSub">八类知识 · 磁贴翻面查看说明</p>
+  </div>
+  <div class="tiles" id="tiles"></div>
+</section>
+
+<div class="vein" aria-hidden="true">
+  <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+</div>
+
+<!-- ============================================================
+     ⑤ AI 问答展厅
+     ============================================================ -->
+<section class="ai" id="ai">
+  <div class="ai-head">
+    <h2>ASK ALOE</h2>
+    <p class="mono" data-i18n="aiSub">向芦荟提问 · 答案带出处</p>
+  </div>
+
+  <div class="ai-stage">
+    <div class="bubble-q" id="qBubble" aria-live="polite"></div>
+
+    <div class="card-a" id="aCard">
+      <p class="fade" id="aLine1"></p>
+      <p class="fade" id="aLine2"></p>
+      <div class="sources" id="sources"></div>
+    </div>
+
+    <div class="ai-ask">
+      <form class="ask" id="aiAsk" autocomplete="off">
+        <span class="material-symbols-outlined" aria-hidden="true">chat_bubble</span>
+        <input id="aiInput" type="text" data-i18n-ph="aiPlaceholder" placeholder="再问一个…" aria-label="提问">
+        <button type="submit" aria-label="发送">
+          <span class="material-symbols-outlined">send</span>
+        </button>
+      </form>
+      <p class="ai-reply" id="aiReply" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ⑥ 精选条目
+     ============================================================ -->
+<section class="entries" id="entries">
+  <div class="entries-head">
+    <h2 class="sec-title hollow">ENTRIES</h2>
+    <p class="mono" style="margin:-30px 0 40px;color:rgba(27,42,31,.55)" data-i18n="entriesSub">精选条目 · 摘自芦荟条目库</p>
+  </div>
+  <div class="entry-grid" id="entryGrid"></div>
+</section>
+
+<!-- ============================================================
+     ⑦ 编辑原则
+     ============================================================ -->
+<section class="principles" id="principles">
+  <div class="pr-card reveal">
+    <h2>PRINCIPLES<br><span style="font-size:.42em;letter-spacing:0">原则</span></h2>
+    <div class="pr-list" id="prList"></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ⑧ 版本与更新日志
+     ============================================================ -->
+<section class="release" id="release">
+  <div class="rel-card reveal">
+    <div>
+      <p class="rel-ver" id="relVer">v0.1.0</p>
+      <div class="rel-meta">
+        <div><span data-i18n="since">上线日期</span><b id="relSince">—</b></div>
+        <div><span data-i18n="totalEntries">条目总数</span><b id="relCount">筹备中</b></div>
+      </div>
+    </div>
+    <ul class="log" id="relLog"></ul>
+  </div>
+</section>
+
+<!-- ============================================================
+     ⑨ 进入芦荟
+     ============================================================ -->
+<section class="enter">
+  <h2>ENTER</h2>
+  <div class="enter-inner">
+    <a class="btn btn--big" id="enterBtn" href="#" target="_blank" rel="noopener">
+      <span data-i18n="entryLabel">进入芦荟</span>
+      <span class="material-symbols-outlined">arrow_outward</span>
+    </a>
+    <span class="enter-url" id="enterUrl"></span>
+    <p class="enter-note" data-i18n="enterNote">芦荟目前处于早期阶段，内容持续建设中。</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     ⑩ 页脚
+     ============================================================ -->
+<footer class="footer">
+  <div class="foot-wrap">
+    <h2>LET&rsquo;S TALK</h2>
+    <div class="mails" id="mails"></div>
+    <p class="foot-note" data-i18n="contactNote">内容纠错、合作或授权，欢迎邮件联系。</p>
+    <div class="foot-bottom">
+      <span id="copyright">© LaswI Studio / 芦荟 Aloe · v0.1.0</span>
+      <span id="footMeta">ALOE · LASWI STUDIO</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   芦荟 Aloe · 站点配置（所有可变内容集中于此，一改全站生效）
+   ============================================================ */
+const COUNT_TEXT = {"zh-Hans":"收录中","zh-Hant":"收錄中","en":"Indexing"};
+
+const ALOE = {
+  name: "芦荟",
+  nameEn: "Aloe",
+  brand: "LaswI Studio",
+  version: "v0.1.0",
+  siteUrl: "aloe.laswi.com.cn",
+  entryUrl: "#",
+  entryLabel: {
+    "zh-Hans": "进入芦荟",
+    "zh-Hant": "進入蘆薈",
+    "en": "Enter Aloe"
+  },
+  launchDate: "2026.11",
+  emails: ["3199704668@qq.com", "1828236908@qq.com"],
+  tagline: {
+    "zh-Hans": "把知识问出来，让每一个答案都有出处。",
+    "zh-Hant": "把知識問出來，讓每一個答案都有出處。",
+    "en": "Ask, don't dig. Every answer carries its source."
+  },
+  positioning: [
+    {
+      text: {
+        "zh-Hans": "不是把知识【堆】起来，而是让人【问】出来",
+        "zh-Hant": "不是把知識【堆】起來，而是讓人【問】出來",
+        "en": "Knowledge is not 【stacked】 — it is 【asked】 for."
+      },
+      note: {
+        "zh-Hans": "条目不再是网页上等待被检索的孤岛，而是一次对话的起点。",
+        "zh-Hant": "條目不再是網頁上等待被檢索的孤島，而是一次對話的起點。",
+        "en": "An entry is no longer an island waiting to be searched — it is the start of a conversation."
+      }
+    },
+    {
+      text: {
+        "zh-Hans": "每个答案都能【追溯】，可查、可核",
+        "zh-Hant": "每個答案都能【追溯】，可查、可核",
+        "en": "Every answer is 【traceable】 — checkable, verifiable."
+      },
+      note: {
+        "zh-Hans": "答案旁永远跟着来源编号，点开就是原始出处。",
+        "zh-Hant": "答案旁永遠跟著來源編號，點開就是原始出處。",
+        "en": "Source numbers always sit beside the answer; open one and you land on the original."
+      }
+    },
+    {
+      text: {
+        "zh-Hans": "由 AI 检索整理，由【人】审阅维护",
+        "zh-Hant": "由 AI 檢索整理，由【人】審閱維護",
+        "en": "Retrieved by AI, 【reviewed】 by people."
+      },
+      note: {
+        "zh-Hans": "机器负责速度与覆盖率，编辑负责判断与责任。",
+        "zh-Hant": "機器負責速度與覆蓋率，編輯負責判斷與責任。",
+        "en": "Machines handle speed and coverage; editors handle judgement and responsibility."
+      }
+    }
+  ],
+  categories: [
+    { name: {"zh-Hans":"科学","zh-Hant":"科學","en":"Science"}, icon:"science",
+      desc:{"zh-Hans":"从基础原理出发，解释世界如何运作。","zh-Hant":"從基礎原理出發，解釋世界如何運作。","en":"First principles, explaining how the world works."},
+      count:COUNT_TEXT, tone:"t-green" },
+    { name: {"zh-Hans":"技术","zh-Hant":"技術","en":"Technology"}, icon:"memory",
+      desc:{"zh-Hans":"工具、系统与工程实践的概念索引。","zh-Hant":"工具、系統與工程實踐的概念索引。","en":"Concepts across tools, systems and engineering practice."},
+      count:COUNT_TEXT, tone:"t-deep" },
+    { name: {"zh-Hans":"历史","zh-Hant":"歷史","en":"History"}, icon:"history_edu",
+      desc:{"zh-Hans":"按时间线梳理事件与因果关系。","zh-Hant":"按時間線梳理事件與因果關係。","en":"Events and causality arranged along a timeline."},
+      count:COUNT_TEXT, tone:"t-paper" },
+    { name: {"zh-Hans":"文化","zh-Hant":"文化","en":"Culture"}, icon:"palette",
+      desc:{"zh-Hans":"语言、艺术与习俗的来路与流变。","zh-Hant":"語言、藝術與習俗的來路與流變。","en":"The origins and drift of language, art and custom."},
+      count:COUNT_TEXT, tone:"t-yellow" },
+    { name: {"zh-Hans":"生活","zh-Hant":"生活","en":"Everyday"}, icon:"eco",
+      desc:{"zh-Hans":"日常里那些说不清、查得到的常识。","zh-Hant":"日常裡那些說不清、查得到的常識。","en":"Everyday common sense that is easier to look up than to explain."},
+      count:COUNT_TEXT, tone:"t-mist" },
+    { name: {"zh-Hans":"人物","zh-Hant":"人物","en":"People"}, icon:"person",
+      desc:{"zh-Hans":"以人物为线索串起一段知识脉络。","zh-Hant":"以人物為線索串起一段知識脈絡。","en":"Following a person to trace a branch of knowledge."},
+      count:COUNT_TEXT, tone:"t-white" },
+    { name: {"zh-Hans":"地理","zh-Hant":"地理","en":"Geography"}, icon:"public",
+      desc:{"zh-Hans":"地方、地貌与它们带来的差异。","zh-Hant":"地方、地貌與它們帶來的差異。","en":"Places, terrain, and the differences they create."},
+      count:COUNT_TEXT, tone:"t-paper" },
+    { name: {"zh-Hans":"概念","zh-Hant":"概念","en":"Concepts"}, icon:"lightbulb",
+      desc:{"zh-Hans":"跨学科的抽象词，一次讲清。","zh-Hant":"跨學科的抽象詞，一次講清。","en":"Cross-disciplinary abstractions, explained in one pass."},
+      count:COUNT_TEXT, tone:"t-green" }
+  ],
+  aiDemo: {
+    question: {
+      "zh-Hans": "为什么天空是蓝色的？",
+      "zh-Hant": "為什麼天空是藍色的？",
+      "en": "Why is the sky blue?"
+    },
+    answer1: {
+      "zh-Hans": "阳光本身包含各种颜色，进入大气后会被空气分子散射。波长越短的光散射得越强，蓝紫光比红光强得多，因此我们从各个方向看到的天空都被蓝光填满了<sup class=\"cite\">1</sup>。",
+      "zh-Hant": "陽光本身包含各種顏色，進入大氣後會被空氣分子散射。波長越短的光散射得越強，藍紫光比紅光強得多，因此我們從各個方向看到的天空都被藍光填滿了<sup class=\"cite\">1</sup>。",
+      "en": "Sunlight contains many colours; once it enters the atmosphere it scatters off air molecules. Shorter wavelengths scatter far more strongly, so blue light reaches us from every direction and fills the sky<sup class=\"cite\">1</sup>."
+    },
+    answer2: {
+      "zh-Hans": "这被称为瑞利散射，散射强度大致与波长的四次方成反比<sup class=\"cite\">2</sup>。至于傍晚天空偏红，是因为阳光斜穿更厚的大气，蓝光在路上被散射掉了<sup class=\"cite\">3</sup>。",
+      "zh-Hant": "這被稱為瑞利散射，散射強度大致與波長的四次方成反比<sup class=\"cite\">2</sup>。至於傍晚天空偏紅，是因為陽光斜穿更厚的大氣，藍光在路上被散射掉了<sup class=\"cite\">3</sup>。",
+      "en": "This is Rayleigh scattering: intensity scales roughly with the inverse fourth power of wavelength<sup class=\"cite\">2</sup>. Sunsets look red because light travels a longer path through the atmosphere, and the blue is scattered away first<sup class=\"cite\">3</sup>."
+    },
+    sources: [
+      { id:1, title:{"zh-Hans":"Rayleigh scattering","zh-Hant":"Rayleigh scattering","en":"Rayleigh scattering"}, meta:{"zh-Hans":"Encyclopaedia Britannica · 参考条目","zh-Hant":"Encyclopaedia Britannica · 參考條目","en":"Encyclopaedia Britannica · reference entry"} },
+      { id:2, title:{"zh-Hans":"The Feynman Lectures on Physics, Vol. I","zh-Hant":"The Feynman Lectures on Physics, Vol. I","en":"The Feynman Lectures on Physics, Vol. I"}, meta:{"zh-Hans":"R. P. Feynman · 1963","zh-Hant":"R. P. Feynman · 1963","en":"R. P. Feynman · 1963"} },
+      { id:3, title:{"zh-Hans":"Why Is the Sky Blue?","zh-Hant":"Why Is the Sky Blue?","en":"Why Is the Sky Blue?"}, meta:{"zh-Hans":"NASA Space Place · 科普栏目","zh-Hant":"NASA Space Place · 科普欄目","en":"NASA Space Place · explainer"} }
+    ]
+  },
+  entries: [
+    { cat:{"zh-Hans":"科学","zh-Hant":"科學","en":"Science"},
+      title:{"zh-Hans":"光合作用","zh-Hant":"光合作用","en":"Photosynthesis"},
+      summary:{"zh-Hans":"叶绿体中的叶绿素吸收光能，把水和二氧化碳合成有机物并释放氧气。过程分为光反应与碳同化两步，C3、C4、CAM 是三条主要固碳路径。","zh-Hant":"葉綠體中的葉綠素吸收光能，把水和二氧化碳合成有機物並釋放氧氣。過程分為光反應與碳同化兩步，C3、C4、CAM 是三條主要固碳路徑。","en":"Chlorophyll in the chloroplast absorbs light and turns water and CO₂ into organic matter plus oxygen. It splits into light reactions and carbon fixation, with C3, C4 and CAM as the three main pathways."},
+      cites:["[1]","[2]","[3]"], tone:"c-green", span:"s3", hollow:true },
+    { cat:{"zh-Hans":"技术","zh-Hant":"技術","en":"Technology"},
+      title:{"zh-Hans":"索引的代价","zh-Hant":"索引的代價","en":"The Cost of an Index"},
+      summary:{"zh-Hans":"索引把全表扫描换成有序定位，代价是每次写入都要同步维护索引结构，占用额外存储并拖慢写入。B+ 树的作用就是把随机 I/O 变成有序遍历。","zh-Hant":"索引把全表掃描換成有序定位，代價是每次寫入都要同步維護索引結構，佔用額外儲存並拖慢寫入。B+ 樹的作用就是把隨機 I/O 變成有序遍歷。","en":"An index replaces a full scan with an ordered lookup, but every write must maintain it — extra storage, slower inserts. A B+tree turns random I/O into ordered traversal."},
+      cites:["[1]","[2]"], tone:"c-deep", span:"s3" },
+    { cat:{"zh-Hans":"历史","zh-Hant":"歷史","en":"History"},
+      title:{"zh-Hans":"标准时间的确立","zh-Hant":"標準時間的確立","en":"The Invention of Standard Time"},
+      summary:{"zh-Hans":"铁路时刻表与电报让各地的地方时无法并存。1884 年华盛顿子午线会议确定以格林尼治为本初子午线，全球时区制度由此铺开。","zh-Hant":"鐵路時刻表與電報讓各地的地方時無法並存。1884 年華盛頓子午線會議確定以格林尼治為本初子午線，全球時區制度由此鋪開。","en":"Railway timetables and telegraphy made local mean time unworkable. The 1884 Washington Meridian Conference fixed Greenwich as the prime meridian, and time zones spread from there."},
+      cites:["[1]","[2]"], tone:"c-paper", span:"s2" },
+    { cat:{"zh-Hans":"文化","zh-Hant":"文化","en":"Culture"},
+      title:{"zh-Hans":"笔记的方法","zh-Hant":"筆記的方法","en":"How Notes Work"},
+      summary:{"zh-Hans":"卡片盒笔记法把笔记写成互相引用的独立卡片，靠编号与链接形成网络，而不是按主题归档。卢曼用这套方法积累出数以万计的卡片。","zh-Hant":"卡片盒筆記法把筆記寫成互相引用的獨立卡片，靠編號與連結形成網絡，而不是按主題歸檔。盧曼用這套方法積累出數以萬計的卡片。","en":"The Zettelkasten method writes notes as independent, cross-referenced cards indexed by number and link rather than filed by topic. Luhmann built tens of thousands of them this way."},
+      cites:["[1]"], tone:"c-yellow", span:"s2" },
+    { cat:{"zh-Hans":"生活","zh-Hant":"生活","en":"Everyday"},
+      title:{"zh-Hans":"为什么水壶会响","zh-Hant":"為什麼水壺會響","en":"Why Kettles Sing"},
+      summary:{"zh-Hans":"哨音来自蒸汽经哨孔高速喷出时的湍流与腔体共振。水剧烈沸腾后蒸汽流变得连续稳定，声音随之改变或消失。","zh-Hant":"哨音來自蒸汽經哨孔高速噴出時的湍流與腔體共振。水劇烈沸騰後蒸汽流變得連續穩定，聲音隨之改變或消失。","en":"The whistle comes from turbulence and cavity resonance as steam is forced through the spout. Once the boil is vigorous the flow steadies and the sound changes or stops."},
+      cites:["[1]","[2]"], tone:"c-mist", span:"s2" },
+    { cat:{"zh-Hans":"概念","zh-Hant":"概念","en":"Concepts"},
+      title:{"zh-Hans":"可追溯性","zh-Hant":"可追溯性","en":"Traceability"},
+      summary:{"zh-Hans":"指一个结论能否被带回它最初的来源。供应链、科研与内容生产都靠它判断可信度——芦荟把它当作收录的第一道门槛。","zh-Hant":"指一個結論能否被帶回它最初的來源。供應鏈、科研與內容生產都靠它判斷可信度——蘆薈把它當作收錄的第一道門檻。","en":"Whether a conclusion can be carried back to where it came from. Supply chains, research and publishing all rely on it; Aloe treats it as the first gate for any entry."},
+      cites:["[1]","[2]","[3]"], tone:"c-white", span:"s3" },
+    { cat:{"zh-Hans":"地理","zh-Hant":"地理","en":"Geography"},
+      title:{"zh-Hans":"海岸线为什么是弯的","zh-Hant":"海岸線為什麼是彎的","en":"Why Coastlines Bend"},
+      summary:{"zh-Hans":"波浪折射让波峰线趋于与海岸平行，能量向岬角集中、在海湾分散。长期侵蚀把岬角磨退、把海湾填平，岩性差异再叠加出曲折轮廓。","zh-Hant":"波浪折射讓波峰線趨於與海岸平行，能量向岬角集中、在海灣分散。長期侵蝕把岬角磨退、把海灣填平，岩性差異再疊加出曲折輪廓。","en":"Wave refraction bends crests parallel to the shore, concentrating energy on headlands and spreading it in bays. Erosion wears the points back and fills the bays, and rock type adds the rest of the shape."},
+      cites:["[1]","[2]"], tone:"c-green", span:"s3" }
+  ],
+  principles: [
+    { icon:"link", title:{"zh-Hans":"来源可追溯","zh-Hant":"來源可追溯","en":"Sources are traceable"},
+      desc:{"zh-Hans":"每条答案都附带出处编号，读者可以自行回到原始材料核对。","zh-Hant":"每條答案都附帶出處編號，讀者可以自行回到原始材料核對。","en":"Every answer carries a source number so readers can verify it against the original material."} },
+    { icon:"smart_toy", title:{"zh-Hans":"AI 内容必须标注","zh-Hant":"AI 內容必須標註","en":"AI output is labelled"},
+      desc:{"zh-Hans":"由模型生成、检索整理的部分会明确标识，不与人工撰写混为一谈。","zh-Hant":"由模型生成、檢索整理的部分會明確標識，不與人工撰寫混為一談。","en":"Model-generated or assembled passages are marked as such, never blended silently with human writing."} },
+    { icon:"verified_user", title:{"zh-Hans":"人工审阅把关","zh-Hant":"人工審閱把關","en":"Human review"},
+      desc:{"zh-Hans":"上线前由编辑逐条确认表述与引用，责任落在具体的人身上。","zh-Hant":"上線前由編輯逐條確認表述與引用，責任落在具體的人身上。","en":"Editors confirm wording and citations before publication; responsibility sits with a named person."} },
+    { icon:"history", title:{"zh-Hans":"修订记录公开","zh-Hant":"修訂記錄公開","en":"Public revision log"},
+      desc:{"zh-Hans":"改动留痕，被修正过的内容同时保留旧版本痕迹。","zh-Hant":"改動留痕，被修正過的內容同時保留舊版本痕跡。","en":"Changes leave traces; corrected passages keep a visible history of what was wrong."} }
+  ],
+  changelog: [
+    {"zh-Hans":"v0.1.0 — 官网首版上线，确立几何芦荟与可追溯视觉语言","zh-Hant":"v0.1.0 — 官網首版上線，確立幾何蘆薈與可追溯視覺語言","en":"v0.1.0 — First public site; geometric aloe and traceability system established"},
+    {"zh-Hans":"v0.1.0 — 八类知识分类框架与条目版式定稿","zh-Hant":"v0.1.0 — 八類知識分類框架與條目版式定稿","en":"v0.1.0 — Eight-category framework and entry layouts finalised"},
+    {"zh-Hans":"v0.1.0 — AI 问答展厅交互演示（不含后端）","zh-Hant":"v0.1.0 — AI 問答展廳互動演示（不含後端）","en":"v0.1.0 — AI Q&A hall demo (front-end only)"}
+  ],
+  stats: { totalEntries: {"zh-Hans":"筹备中","zh-Hant":"籌備中","en":"In preparation"} }
+};
+
+/* ============================================================
+   三语字典（界面文案）
+   ============================================================ */
+const I18N = {
+  "zh-Hans": {
+    navHome:"首页", navAbout:"定位", navCategories:"分类", navAi:"AI 问答",
+    navEntries:"条目", navPrinciples:"原则",
+    heroKicker:"AI 时代的百科全书",
+    askPlaceholder:"问点什么…",
+    aiPlaceholder:"再问一个…",
+    catSub:"八类知识 · 磁贴会自动翻面",
+    aiSub:"向芦荟提问 · 答案带出处",
+    entriesSub:"精选条目 · 摘自芦荟条目库",
+    readMore:"阅读",
+    changelogTitle:"更新日志",
+    entryLabel:"进入芦荟",
+    since:"上线日期",
+    totalEntries:"条目总数",
+    enterNote:"芦荟目前处于早期阶段，内容持续建设中。",
+    contactNote:"内容纠错、合作或授权，欢迎邮件联系。",
+    searching:"芦荟正在检索…",
+    demoReply:"（前端演示）芦荟尚未接入检索后端，正式版会返回带来源编号的答案。",
+    copyright:"© LaswI Studio / 芦荟 Aloe"
+  },
+  "zh-Hant": {
+    navHome:"首頁", navAbout:"定位", navCategories:"分類", navAi:"AI 問答",
+    navEntries:"條目", navPrinciples:"原則",
+    heroKicker:"AI 時代的百科全書",
+    askPlaceholder:"問點什麼…",
+    aiPlaceholder:"再問一個…",
+    catSub:"八類知識 · 磁貼會自動翻面",
+    aiSub:"向蘆薈提問 · 答案帶出處",
+    entriesSub:"精選條目 · 摘自蘆薈條目庫",
+    readMore:"閱讀",
+    changelogTitle:"更新日誌",
+    entryLabel:"進入蘆薈",
+    since:"上線日期",
+    totalEntries:"條目總數",
+    enterNote:"蘆薈目前處於早期階段，內容持續建設中。",
+    contactNote:"內容糾錯、合作或授權，歡迎郵件聯繫。",
+    searching:"蘆薈正在檢索…",
+    demoReply:"（前端演示）蘆薈尚未接入檢索後端，正式版會返回帶來源編號的答案。",
+    copyright:"© LaswI Studio / 蘆薈 Aloe"
+  },
+  "en": {
+    navHome:"Home", navAbout:"About", navCategories:"Categories", navAi:"Ask AI",
+    navEntries:"Entries", navPrinciples:"Principles",
+    heroKicker:"An encyclopedia for the AI era",
+    askPlaceholder:"Ask something…",
+    aiPlaceholder:"Ask another…",
+    catSub:"Eight domains · tiles flip automatically",
+    aiSub:"Ask Aloe · every answer carries sources",
+    entriesSub:"Selected entries · drawn from the Aloe index",
+    readMore:"Read",
+    changelogTitle:"Changelog",
+    entryLabel:"Enter Aloe",
+    since:"Launched",
+    totalEntries:"Entries",
+    enterNote:"Aloe is at an early stage; content is being built continuously.",
+    contactNote:"For corrections, partnerships or licensing, write to us.",
+    searching:"Aloe is retrieving…",
+    demoReply:"(Front-end demo) Aloe is not wired to its retrieval back end yet; the live build returns answers with source numbers.",
+    copyright:"© LaswI Studio / Aloe"
+  }
+};
+
+/* ============================================================
+   基础工具
+   ============================================================ */
+let LANG = "zh-Hans";
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const $  = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+/** 取多语言值：字符串原样返回，对象按当前语言取值 */
+function t(v){
+  if (v == null) return "";
+  if (typeof v === "object" && !Array.isArray(v)) {
+    return v[LANG] ?? v["zh-Hans"] ?? Object.values(v)[0] ?? "";
+  }
+  return v;
+}
+/** 取界面字典 */
+function tt(key){ return (I18N[LANG] && I18N[LANG][key]) ?? I18N["zh-Hans"][key] ?? key; }
+
+/* ============================================================
+   渲染
+   ============================================================ */
+const SVG_LEAF = `
+<svg class="tile-leaf" viewBox="0 0 100 100" aria-hidden="true">
+  <path d="M50 92 C34 64 34 34 50 8 C66 34 66 64 50 92 Z"
+        fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round"/>
+  <line x1="50" y1="20" x2="50" y2="86" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+</svg>`;
+
+/** 定位宣言 */
+function renderPositioning(){
+  const host = $("#posLines");
+  host.innerHTML = "";
+  ALOE.positioning.forEach((row, i) => {
+    const text = t(row.text).replace(/【(.*?)】/g, '<span class="mark">$1</span>');
+    const line = document.createElement("p");
+    line.className = "pos-line";
+    line.innerHTML = text;
+    line.style.transitionDelay = (i * 60) + "ms";
+    host.appendChild(line);
+  });
+  $("#posNote").textContent = t({
+    "zh-Hans":"芦荟不是搜索引擎的替代品，而是把一次检索变成一段可复述的解释。",
+    "zh-Hant":"蘆薈不是搜尋引擎的替代品，而是把一次檢索變成一段可複述的解釋。",
+    "en":"Aloe does not replace search — it turns a lookup into an explanation you can retell."
+  });
+}
+
+/** 分类磁贴 */
+function renderTiles(){
+  const host = $("#tiles");
+  host.innerHTML = "";
+  const bigIdx = [0, 5];
+  ALOE.categories.forEach((c, i) => {
+    const tile = document.createElement("div");
+    tile.className = "tile" + (bigIdx.includes(i) ? " big" : "");
+    tile.setAttribute("tabindex", "0");
+    tile.setAttribute("role", "button");
+    tile.setAttribute("aria-label", t(c.name));
+
+    tile.innerHTML = `
+      <div class="tile-face ${c.tone}">
+        <span class="material-symbols-outlined">${c.icon}</span>
+        <div>
+          <div class="tile-name">${t(c.name)}</div>
+          <div class="tile-count">${t(c.count)}</div>
+        </div>
+        ${SVG_LEAF}
+      </div>
+      <div class="tile-face tile-back ${c.tone}">
+        <span class="mono-sm" style="opacity:.7">${String(i + 1).padStart(2, "0")}</span>
+        <div class="tile-desc">${t(c.desc)}</div>
+        ${SVG_LEAF}
+      </div>`;
+    tile.addEventListener("click", () => tile.classList.toggle("flipped"));
+    tile.addEventListener("mouseenter", () => { tile.dataset.hover = "1"; });
+    tile.addEventListener("mouseleave", () => { delete tile.dataset.hover; });
+    tile.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); tile.classList.toggle("flipped"); }
+    });
+    host.appendChild(tile);
+  });
+}
+
+/** AI 展厅静态部分（来源卡片） */
+function renderSources(){
+  const host = $("#sources");
+  host.innerHTML = "";
+  ALOE.aiDemo.sources.forEach((s) => {
+    const el = document.createElement("div");
+    el.className = "source";
+    el.innerHTML = `
+      <span class="num">${s.id}</span>
+      <h5>${t(s.title)}</h5>
+      <div class="meta">${t(s.meta)}</div>`;
+    host.appendChild(el);
+  });
+  $("#qBubble").textContent = "";
+  $("#aLine1").innerHTML = t(ALOE.aiDemo.answer1);
+  $("#aLine2").innerHTML = t(ALOE.aiDemo.answer2);
+}
+
+/** 精选条目 */
+function renderEntries(){
+  const host = $("#entryGrid");
+  host.innerHTML = "";
+  ALOE.entries.forEach((e) => {
+    const card = document.createElement("article");
+    card.className = `card ${e.tone} ${e.span}${e.hollow ? " hollow-title" : ""}`;
+    const cites = e.cites.map((c) => `<span>${c}</span>`).join("");
+    card.innerHTML = `
+      <span class="chip">${t(e.cat)}</span>
+      <h3>${t(e.title)}</h3>
+      <p>${t(e.summary)}</p>
+      <div class="foot">
+        <div class="cites">${cites}</div>
+        <span class="read">${tt("readMore")}
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </span>
+      </div>`;
+    host.appendChild(card);
+  });
+}
+
+/** 编辑原则 */
+function renderPrinciples(){
+  const host = $("#prList");
+  host.innerHTML = "";
+  ALOE.principles.forEach((p) => {
+    const item = document.createElement("div");
+    item.className = "pr-item";
+    item.innerHTML = `
+      <span class="material-symbols-outlined">${p.icon}</span>
+      <div>
+        <h4>${t(p.title)}</h4>
+        <p>${t(p.desc)}</p>
+      </div>`;
+    host.appendChild(item);
+  });
+}
+
+/** 版本 / 更新日志 / 页脚 */
+function renderRelease(){
+  $("#verBadge").textContent = ALOE.version;
+  $("#relVer").textContent = ALOE.version;
+
+  $("#verLog").innerHTML = ALOE.changelog.map((c) => `<li>${t(c)}</li>`).join("");
+  $("#relLog").innerHTML = ALOE.changelog.map((c) => `<li>${t(c)}</li>`).join("");
+
+  $("#relSince").textContent = ALOE.launchDate;
+  $("#relCount").textContent = t(ALOE.stats.totalEntries);
+
+  $("#mails").innerHTML = ALOE.emails
+    .map((m) => `<a href="mailto:${m}">${m}</a>`).join("");
+
+  $("#copyright").textContent = `${tt("copyright")} · ${ALOE.version}`;
+  $("#footMeta").textContent = `${ALOE.nameEn.toUpperCase()} · ${ALOE.brand.toUpperCase()}`;
+}
+
+/** 按钮 / 输入框 / 静态文案 */
+function renderStatics(){
+  $("#navEnter").href = ALOE.entryUrl;
+  $("#enterBtn").href = ALOE.entryUrl;
+  $("#navEnter").querySelector("[data-i18n]").textContent = t(ALOE.entryLabel);
+  $("#enterBtn").querySelector("[data-i18n]").textContent = t(ALOE.entryLabel);
+
+  $("#enterUrl").textContent = ALOE.siteUrl;
+  $("#heroKicker").textContent = tt("heroKicker");
+  $("#heroTagline").textContent = t(ALOE.tagline);
+
+  $("#heroInput").placeholder = tt("askPlaceholder");
+  $("#aiInput").placeholder = tt("aiPlaceholder");
+
+  $$("[data-i18n]").forEach((el) => { el.textContent = tt(el.dataset.i18n); });
+  $$("[data-i18n-ph]").forEach((el) => { el.placeholder = tt(el.dataset.i18nPh); });
+
+  document.documentElement.lang = LANG;
+}
+
+/** 全量渲染（切换语言时复用） */
+function renderAll(){
+  renderPositioning();
+  renderTiles();
+  renderSources();
+  renderEntries();
+  renderPrinciples();
+  renderRelease();
+  renderStatics();
+  observeReveals();
+}
+
+/* ============================================================
+   语言切换
+   ============================================================ */
+$$(".lang button").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    if (btn.dataset.lang === LANG) return;
+    LANG = btn.dataset.lang;
+    $$(".lang button").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+    renderAll();
+    // 淡入动效
+    $$(".tile-name, .card h3, .pos-line, .pr-item h4").forEach((el) => {
+      el.style.opacity = "0";
+      requestAnimationFrame(() => { el.style.opacity = "1"; });
+    });
+    resetAiDemo();
+  });
+});
+
+/* ============================================================
+   导航滚动收合
+   ============================================================ */
+const nav = $("#nav");
+let lastY = 0;
+function onScroll(){
+  const y = window.scrollY;
+  if (y > 40) nav.classList.add("compact");
+  else nav.classList.remove("compact");
+  lastY = y;
+}
+window.addEventListener("scroll", onScroll, { passive: true });
+onScroll();
+
+/* ============================================================
+   入场动画（IntersectionObserver）
+   ============================================================ */
+let io = null;
+function observeReveals(){
+  if (io) io.disconnect();
+  io = new IntersectionObserver((entries) => {
+    entries.forEach((en) => {
+      if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); }
+    });
+  }, { threshold: .16 });
+  $$(".reveal").forEach((el) => io.observe(el));
+}
+
+/* ============================================================
+   磁贴自动翻面（4–6 秒随机），悬停暂停
+   ============================================================ */
+if (!reduceMotion) {
+  setInterval(() => {
+    const tiles = $$(".tile:not([data-hover])");
+    if (!tiles.length) return;
+    const pick = tiles[Math.floor(Math.random() * tiles.length)];
+    pick.classList.add("flipped");
+    setTimeout(() => pick.classList.remove("flipped"), 3600);
+  }, 4800);
+}
+
+/* ============================================================
+   AI 展厅：打字机 + 逐段淡入
+   ============================================================ */
+const aiSection = $("#ai");
+let aiPlayed = false;
+
+function typeQuestion(text, done){
+  const host = $("#qBubble");
+  if (reduceMotion) { host.textContent = text; done && done(); return; }
+  host.innerHTML = "";
+  const span = document.createElement("span");
+  const caret = document.createElement("span");
+  caret.className = "caret";
+  host.appendChild(span); host.appendChild(caret);
+  let i = 0;
+  const timer = setInterval(() => {
+    span.textContent = text.slice(0, ++i);
+    if (i >= text.length) {
+      clearInterval(timer);
+      setTimeout(() => { caret.remove(); done && done(); }, 380);
+    }
+  }, 62);
+}
+
+function playAiDemo(){
+  const q = t(ALOE.aiDemo.question);
+  $$("#aCard .fade").forEach((el) => el.classList.remove("in"));
+  typeQuestion(q, () => {
+    const l1 = $("#aLine1"), l2 = $("#aLine2");
+    setTimeout(() => l1.classList.add("in"), 120);
+    setTimeout(() => l2.classList.add("in"), 900);
+  });
+}
+function resetAiDemo(){
+  aiPlayed = false;
+  $("#qBubble").textContent = "";
+  $$("#aCard .fade").forEach((el) => el.classList.remove("in"));
+  if (!reduceMotion) aiSection && observeAi();
+}
+
+function observeAi(){
+  const ob = new IntersectionObserver((ens) => {
+    ens.forEach((en) => {
+      if (en.isIntersecting && !aiPlayed) { aiPlayed = true; playAiDemo(); ob.disconnect(); }
+    });
+  }, { threshold: .28 });
+  ob.observe(aiSection);
+}
+
+/* ============================================================
+   表单 / 输入框交互（纯前端）
+   ============================================================ */
+$("#heroAsk").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const v = $("#heroInput").value.trim();
+  document.getElementById("ai").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+  if (v) {
+    setTimeout(() => { $("#aiInput").value = v; }, 420);
+  }
+});
+
+$("#aiAsk").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const reply = $("#aiReply");
+  reply.classList.add("on");
+  reply.textContent = tt("searching");
+  setTimeout(() => { reply.textContent = tt("demoReply"); }, 1100);
+});
+
+/* ============================================================
+   Hero 视差（鼠标移动，尊重 reduced-motion）
+   ============================================================ */
+if (!reduceMotion) {
+  const aloe = $("#heroAloe");
+  const aloeSvg = $("#heroAloe svg");
+  const blobs = $(".hero-blobs");
+  let raf = null;
+  window.addEventListener("mousemove", (e) => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      const cx = (e.clientX / window.innerWidth - .5);
+      const cy = (e.clientY / window.innerHeight - .5);
+      /* 视差作用在 svg 上，避免与 .hero-aloe 的摆动 keyframes 抢占 transform */
+      aloeSvg.style.transform = `translate3d(${cx * 18}px, ${cy * 14}px, 0)`;
+      blobs.style.transform = `translate3d(${cx * -12}px, ${cy * -9}px, 0)`;
+      raf = null;
+    });
+  }, { passive: true });
+}
+
+/* ============================================================
+   启动
+   ============================================================ */
+renderAll();
+if (!reduceMotion) observeAi();
+else playAiDemo();
+</script>
+</body>
+</html>
